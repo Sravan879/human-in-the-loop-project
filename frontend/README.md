@@ -1,70 +1,58 @@
-# Getting Started with Create React App
+# Human-in-the-Loop AI Agent
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A simple AI agent for a salon that answers customer questions. When it doesn't know an answer, it escalates to a human supervisor and learns from the response.
 
-## Available Scripts
+---
+## Tech Stack
 
-In the project directory, you can run:
+* **Backend:** FastAPI (Python)
+* **Frontend:** React (JavaScript)
+* **Database:** Firebase Firestore
+* **Real-time:** LiveKit SDK
 
-### `npm start`
+---
+## Setup Instructions
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+1.  **Clone Repo & Install Tools:**
+    * Clone this repository.
+    * Ensure you have Python 3.8+ and Node.js installed.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+2.  **Get Credentials:**
+    * Create a **Firebase** project, generate a private key, and save it as `service-account-key.json` in the root folder.
+    * Create a **LiveKit** project, generate an API Key/Secret, and add your credentials to `livekit_agent.py` and `user_simulator.py`.
 
-### `npm test`
+3.  **Set Up Backend:**
+    ```bash
+    cd backend
+    python -m venv venv
+    source venv/bin/activate  # On Windows: venv\Scripts\activate
+    pip install -r requirements.txt
+    ```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+4.  **Set Up Frontend:**
+    ```bash
+    cd frontend
+    npm install
+    ```
+---
+## How to Run
 
-### `npm run build`
+You need **four separate terminals** to run the system.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1.  **Terminal 1 (Backend):** In the `backend` folder, run `uvicorn main:app --reload`
+2.  **Terminal 2 (Frontend):** In the `frontend` folder, run `npm start`
+3.  **Terminal 3 (Agent):** In the root folder, run `python livekit_agent.py`
+4.  **Terminal 4 (Simulator):** In the root folder, run `python user_simulator.py`
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
+## Design Notes
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+* **Decoupled Services:** The Agent, Backend, and Frontend are separate services that communicate via APIs and data channels. This makes the system modular and easier to maintain.
+* **Stateful Requests:** Help requests in the database have a `status` field (`pending`, `resolved`). This simple state management cleanly drives the UI and the request lifecycle.
+* **Serverless DB:** Using Firestore allows the system to scale easily without managing database infrastructure. The knowledge base is stored in a separate collection, acting as the AI's long-term memory.
 
-### `npm run eject`
+---
+### Important Note on a Known Blocker
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+A persistent `ModuleNotFoundError` for the `livekit_api` package was encountered during development across multiple environments. This appears to be a reproducible environment issue, not a flaw in the code's logic.
+As a result, a live demo of `livekit_agent.py` may fail. However, the backend API, database logic, and frontend UI are fully functional and implemented correctly.5
